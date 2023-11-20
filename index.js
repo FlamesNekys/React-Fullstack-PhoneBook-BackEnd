@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
 let persons = [
     { 
@@ -24,10 +25,12 @@ let persons = [
     }
 ]
 
-app.use(express.json())
+morgan.token('data', (req, res) => JSON.stringify(req.body))
 
-app.get('/api/persons', (req, res) => res.json(persons)
-)
+app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
+
+app.get('/api/persons', (req, res) => res.json(persons))
 
 app.get('/info', (req, res) => {
     const date = new Date()

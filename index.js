@@ -35,24 +35,27 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
 })
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-  }
+// function getRandomInt(max) {
+//     return Math.floor(Math.random() * max);
+//   }
 
 app.post('/api/persons', (req, res) => {
-    const person = req.body
-    if (!person.name || !person.number) return res.status(400).json({ 
+    const body = req.body
+    if (!body.name || !body.number) return res.status(400).json({ 
         error: 'name or number is missing' 
       })
-    if (persons.find(pers=> pers.name === person.name)) return res.status(400).json({ 
-        error: 'name must be unique' 
-      })
-    person.id = getRandomInt(1000000)
+    // if (persons.find(pers=> pers.name === person.name)) return res.status(400).json({ 
+    //     error: 'name must be unique' 
+    //   })
+    // person.id = getRandomInt(1000000)
 
-    persons = persons.concat(person)
-
-    res.json(person)
+    const person = new Person({
+      "name": body.name,
+      "number": body.number
   })
+  person.save().then(savedPerson => {
+      res.json(savedPerson)
+})})
 
   const PORT = process.env.PORT
 
